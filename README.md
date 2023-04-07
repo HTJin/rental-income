@@ -1,1 +1,1 @@
-# rental-income
+# rental-property-calculator
