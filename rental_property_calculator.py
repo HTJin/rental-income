@@ -2,12 +2,27 @@ import re
 import json
 
 class User():
-    def __init__(self, state, year):
+    def __init__(self, state, year, insurance=0, yard=0, vacancy=0, repairs=0, capex=0, mortgage=0, down=0, closing=0, rehab=0, laundry=0, storage=0, misc=0):
         self.state = state
         self.year = year
+        self.insurance = insurance
+        self.yard = yard
+        self.vacancy = vacancy
+        self.repairs = repairs
+        self.capex = capex
+        self.mortgage = mortgage
+        self.down = down
+        self.closing = closing
+        self.rehab = rehab
+        self.laundry = laundry
+        self.storage = storage
+        self.misc = misc
         self.rent = 0
         self.data = self.access_rent_data()
-        self.tax_rate, self.hoa_rate, self.propman_rate, self.utilities = self.get_rates()
+        if self.state:
+            self.tax_rate, self.hoa_rate, self.propman_rate, self.utilities = self.get_rates()
+        else:
+            self.tax_rate, self.hoa_rate, self.propman_rate, self.utilities = None, None, None, None
 
     def access_rent_data(self):
         with open('grossrents.txt') as f:
@@ -34,6 +49,11 @@ class User():
         with open('rates.json', 'r') as f:
             rates = json.load(f)
         return rates[self.state]
+    
+    def get_states(self):
+        with open('rates.json', 'r') as f:
+            rates = json.load(f)
+        return list(rates.keys())
                 
 class Income():
     def __init__(self, user, laundry=0, storage=0, misc=0):
