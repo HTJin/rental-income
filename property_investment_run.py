@@ -124,4 +124,4 @@ class PropertyInvestmentCalculator:
                 print("Invalid input. Please enter 'register', 'login', or 'exit'.")
 
 calculator = PropertyInvestmentCalculator()
-print(calculator.run())
+calculator.run()
