@@ -1,6 +1,8 @@
 # Rental Property Calculator
 This rental property calculator is designed to help property investors analyze the potential return on investment for a rental property by calculating the cash flow and cash-on-cash return. The calculator takes into account various income and expense factors related to the property, such as rent, utilities, and taxes, to provide a comprehensive analysis of the investment.
 
+*Tax rate, HOA rate, Property Management rate, and utilities were generated based on grossrents.txt. Simulated rent fluctuation between the decades of 1940-2000*
+
 ## Classes
 ### 1. User
 The User class represents an investor or property owner. It holds information about the property location, the year of investment, and various expense and income factors.
