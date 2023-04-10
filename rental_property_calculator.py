@@ -27,13 +27,14 @@ class User():
     def access_rent_data(self):
         with open('grossrents.txt') as f:
             rents = f.readlines()
-        pattern = re.compile(r'^([A-Z][a-z]*)\W+([0-9]*)\W+([0-9]*)\W+([0-9]*)\W+([0-9]*)\W+([0-9]*)\W+([0-9]*)\W+([0-9]*)')
+        pattern = re.compile(r'^([A-Z][a-z]+)\s+(\d+|NA)\s+(\d+|NA)\s+(\d+|NA)\s+(\d+|NA)\s+(\d+|NA)\s+(\d+|NA)\s+(\d+|NA)')
         for line in rents:
             match = pattern.search(line)
             if match:
                 state, rent2000, rent1990, rent1980, rent1970, rent1960, rent1950, rent1940 = match.groups()
                 if state == self.state:
-                    rents_by_decade = [int(rent2000), int(rent1990), int(rent1980), int(rent1970), int(rent1960), int(rent1950), int(rent1940)]
+                    rent_values = [rent2000, rent1990, rent1980, rent1970, rent1960, rent1950, rent1940]
+                    rents_by_decade = [int(rent) if rent != 'NA' else None for rent in rent_values]
                     start_year = 2000
                     end_year = 1940
                     increment = (rents_by_decade[0] - rents_by_decade[-1]) / (start_year - end_year)
