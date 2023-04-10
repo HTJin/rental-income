@@ -71,7 +71,7 @@ class Income():
         return self.total
 
     def __repr__(self):
-        return f'Your total income is ${self.total:,.2f}'
+        return f'Your total monthly income is ${self.total:,.2f}'
        
 class Expenses():
     def __init__(self, user, insurance, yard, vacancy, repairs, capex, mortgage):
@@ -93,7 +93,7 @@ class Expenses():
         return self.total
         
     def __repr__(self):
-        return f'Your total expenses are ${self.total:,.2f}'
+        return f'Your total monthly expenses are ${self.total:,.2f}'
 
         
 class CashFlow:
@@ -108,7 +108,7 @@ class CashFlow:
         return self.total
 
     def __repr__(self):
-        return f'Your total cash flow is ${self.total:,.2f}'
+        return f'Your total annual cash flow is ${self.total:,.2f}'
 
 class CashReturn():
     def __init__(self, cash_flow, down, closing, rehab, misc=0):
@@ -127,4 +127,4 @@ class CashReturn():
         return (self.cash_flow / self.total_investment) * 100
 
     def __repr__(self):
-        return f'Your cash-on-cash return is {self.return_rate:.2f}%'
+        return f'Your annual cash-on-cash return is {self.return_rate:.2f}%'

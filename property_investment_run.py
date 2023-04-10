@@ -1,5 +1,5 @@
 import json
-from rental_property_calculator import User
+from rental_property_calculator import User, Income, Expenses, CashFlow, CashReturn
 
 class PropertyInvestmentCalculator:
     def __init__(self):
@@ -7,12 +7,15 @@ class PropertyInvestmentCalculator:
         self.users = {}
         self.states = User("", 0).get_states()
 
-    def validate_inputs(self, state, year):
-        if state not in self.states:
-            return False, f"Invalid state: {state}. Please enter a valid state."
-        if year < 1940 or year > 2000:
-            return False, f"Invalid year: {year}. Please enter a valid year between 1940 and 2023."
-        return True, ""
+    def validate_inputs(self, prompt, var_type=float, default=None):
+        while True:
+            try:
+                value = input(prompt)
+                if not value and default is not None:
+                    return default
+                return var_type(value)
+            except ValueError:
+                print(f"Invalid input: {prompt} must be a {var_type.__name__}.")
     
     def register(self):
         while True:
@@ -42,102 +45,43 @@ class PropertyInvestmentCalculator:
         print("Logged out successfully.")
         
     def get_user_inputs(self):
+        state, year = None, None
         while True:
             state = input("1. State: ").capitalize()
-            try:
-                year = int(input("2. Year (between 1940 and 2000): "))
-                if year < 1940 or year > 2000:
-                    raise ValueError("Invalid input: year must be an integer and between 1940 and 2000.")
-            except ValueError as e:
-                print(e)
+            if state not in self.states:
+                print("Invalid input: State not found. Please enter a valid state.")
                 continue
-            self.user = User(state, year)
-            is_valid, error_message = self.validate_inputs(state, year)
-            if not is_valid:
-                print(error_message)
+            year = self.validate_inputs("2. Year (between 1940 and 2000): ", int)
+            if year < 1940 or year > 2000:
+                print("Invalid input: year must be an integer and between 1940 and 2000.")
                 continue
             break
 
+        self.user = User(state, year)
         self.user.access_rent_data()
         self.user.get_rates()
 
-        while True:
-            try:
-                insurance = float(input("3. Insurance amount: "))
-                break
-            except ValueError:
-                print("Invalid input: Insurance amount must be a number.")
-        while True:
-            try:
-                yard = float(input("4. Yard amount: "))
-                break
-            except ValueError:
-                print("Invalid input: Yard amount must be a number.")
-        while True:
-            try:
-                vacancy = float(input("5. Vacancy amount: "))
-                break
-            except ValueError:
-                print("Invalid input: Vacancy amount must be a number.")
-        while True:
-            try:
-                repairs = float(input("6. Repairs amount: "))
-                break
-            except ValueError:
-                print("Invalid input: Repairs amount must be a number.")
-        while True:
-            try:
-                capex = float(input("7. Capital Expenditure amount: "))
-                break
-            except ValueError:
-                print("Invalid input: CapEx amount must be a number.")
-        while True:
-            try:
-                mortgage = float(input("8. Mortgage amount: "))
-                break
-            except ValueError:
-                print("Invalid input: Mortgage amount must be a number.")
-        while True:
-            try:
-                down = float(input("9. Down payment amount: "))
-                break
-            except ValueError:
-                print("Invalid input: Down payment amount must be a number.")
-        while True:
-            try:
-                closing = float(input("10. Closing cost amount: "))
-                break
-            except ValueError:
-                print("Invalid input: Closing cost amount must be a number.")
-        while True:
-            try:
-                rehab = float(input("11. Rehab cost amount: "))
-                break
-            except ValueError:
-                print("Invalid input: Rehab cost amount must be a number.")
-        while True:
-            try:
-                laundry = float(input("12. Laundry income (default: 0): ") or 0)
-                break
-            except ValueError:
-                print("Invalid input: Laundry income must be a number.")
-        while True:
-            try:
-                storage = float(input("13. Storage income (default: 0): ") or 0)
-                break
-            except ValueError:
-                print("Invalid input: Storage income must be a number.")
-        while True:
-            try:
-                misc = float(input("14. Miscellaneous income (default: 0): ") or 0)
-                break
-            except ValueError:
-                print("Invalid input: Misc income must be a number.")
+        insurance = self.validate_inputs("3. Insurance amount: ")
+        yard = self.validate_inputs("4. Yard amount: ")
+        vacancy = self.validate_inputs("5. Vacancy amount: ")
+        repairs = self.validate_inputs("6. Repairs amount: ")
+        capex = self.validate_inputs("7. Capital Expenditure amount: ")
+        mortgage = self.validate_inputs("8. Mortgage amount: ")
+        down = self.validate_inputs("9. Down payment amount: ")
+        closing = self.validate_inputs("10. Closing cost amount: ")
+        rehab = self.validate_inputs("11. Rehab cost amount: ")
+        laundry = self.validate_inputs("12. Laundry income (default: 0): ", default=0)
+        storage = self.validate_inputs("13. Storage income (default: 0): ", default=0)
+        misc = self.validate_inputs("14. Miscellaneous income (default: 0): ", default=0)
                 
         self.user = User(state, year, insurance, yard, vacancy, repairs, capex, mortgage, down, closing, rehab, laundry, storage, misc)
     
     def calculate(self):
-        self.user.calculate()
+        income = Income(self.user)
+        expenses = Expenses(self.user, self.user.insurance, self.user.yard, self.user.vacancy, self.user.repairs, self.user.capex, self.user.mortgage)
+        cash_flow = CashFlow(income, expenses)
+        cash_return = CashReturn(cash_flow, self.user.down, self.user.closing, self.user.rehab)
+        print(cash_return)
        
     def run(self):
         while True:
