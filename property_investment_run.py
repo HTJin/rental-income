@@ -102,7 +102,7 @@ class PropertyInvestmentCalculator:
                     if username:
                         print("Please log in with your newly registered account.")
             elif action == "exit":
-                print("Exiting.")
+                print("Good bye.")
                 break
             else:
                 print("Invalid input. Please enter 'register', 'login', or 'exit'.")
